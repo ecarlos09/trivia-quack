@@ -53,7 +53,6 @@ class Game {
             const category = query.category || Math.floor(Math.random() * 23) + 9
             const difficulty = query.difficulty || ['easy','medium','hard'][Math.floor(Math.random() * 3)]
             const type = query.type || ['boolean','multiple'][Math.round(Math.random())]
-
             try {
                 const db = await init();
                 const url = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=${type}`
@@ -115,13 +114,37 @@ class Game {
                 const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
                 const allAnswers = gameToUpdate.all_answers
                 const results = gameToUpdate.questions.results
-                const res = allAnswers.map(allAns => allAns.answers.map((a, i) => ({
-                    player: allAns.player,
-                    player_answer: a,
-                    correct_answer: results[i].correct_answer,
-                    correct: results[i].correct_answer === a
-                  })))
-                resolve(res)
+                const res = results.map((r, i) => ({
+                    question: r.question,
+                    all_answers: r.incorrect_answers.concat([r.correct_answer]),
+                    correct_answer: r.correct_answer,
+                    player_answers: allAnswers.map((p, j) => ({
+                      player: p.player,
+                      answer: p.answers[i],
+                      correct: p.answers[i] === r.correct_answer
+                    }))
+                  }))
+                const players = gameToUpdate.players
+
+                function countScore(){
+                let scoreRes = []
+                players.forEach(player => {
+                let count = 0
+                let resObj = {name: player}
+                res.forEach(item => {
+                    item.player_answers.forEach(playerAnswer => {
+                        if (playerAnswer.correct && playerAnswer.player === player) {
+                    count++
+                    }
+                    })
+                })
+                resObj.count = count
+                scoreRes.push(resObj)
+                })
+                return scoreRes
+                }
+                const scores = countScore()
+                resolve({data: res, scores: scores})
             } catch (err) {
                 reject(`Error updating answers: ${err.message}`)
             }
