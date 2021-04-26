@@ -111,9 +111,9 @@ class Game {
         return new Promise (async (resolve, reject) => {
             try {
                 const db = await init();
-                const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
-                const allAnswers = gameToUpdate.all_answers
-                const results = gameToUpdate.questions.results
+                const gameToResult = await db.collection('games').findOne({ _id: ObjectId(id) })
+                const allAnswers = gameToResult.all_answers
+                const results = gameToResult.questions.results
                 const res = results.map((r, i) => ({
                     question: r.question,
                     all_answers: r.incorrect_answers.concat([r.correct_answer]),
@@ -124,7 +124,7 @@ class Game {
                       correct: p.answers[i] === r.correct_answer
                     }))
                   }))
-                const players = gameToUpdate.players
+                const players = gameToResult.players
 
                 function countScore(){
                 let scoreRes = []
