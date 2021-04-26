@@ -6,7 +6,7 @@ router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id
         const game = await Game.findById(id)
-        res.status(200).json(new Game(game))
+        res.status(200).json(new Questions(game))
     } catch(err) {
         console.error(err);
         res.status(500).json({ error: err })
@@ -16,7 +16,7 @@ router.get('/:id', async (req, res) => {
 router.post('/', async (req, res) => {
     try {
         const game = await Game.create(req.query)
-        res.status(200).json(new Questions(game.ops[0]))
+        res.status(200).json(game.ops[0]._id)
     } catch(err) {
         console.error(err);
         res.status(500).json({ error: err })
