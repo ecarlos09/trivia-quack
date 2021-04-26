@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controllers = require('../controllers');
+const controllers = require('../controllers/games');
 
 router.get('/', controllers.getAll);
 router.get('/:id', controllers.getById);
