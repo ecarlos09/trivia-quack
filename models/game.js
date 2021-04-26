@@ -2,13 +2,6 @@ const { init } = require("../initdb");
 const { ObjectId } = require('mongodb'); 
 const axios = require('axios')
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
 class Questions {
     constructor(data){
         this.id = data._id
@@ -47,7 +40,6 @@ class Game {
                 const db = await init();
                 const collection = await db.collection('games')
                 const game = await collection.findOne({ _id: ObjectId(id) })
-                console.log(game)
                 resolve(game);
             } catch (err) {
                 reject(`Error retrieving game: ${err.message}`)
@@ -70,6 +62,68 @@ class Game {
                 resolve(newGame);
             } catch (err) {
                 reject(`Error retrieving games: ${err.message}`)
+            }
+        })
+    }
+
+    static addPlayers(id, player){
+        return new Promise (async (resolve, reject) => {
+            try {
+                const db = await init();
+                const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
+                console.log(gameToUpdate)
+                let players = gameToUpdate.players || []
+                let newPlayers = players.concat(player)
+                await db.collection('games').updateOne({ _id: ObjectId(id) },
+                    {
+                      $set: { players: newPlayers },
+                      $currentDate: { lastModified: true }
+                    }
+                 )
+                resolve(`inserted player:${player} for game:${id}`)
+            } catch (err) {
+                reject(`Error updating answers: ${err.message}`)
+            }
+        })
+    }
+
+    static addAnswers(id, player, answers){
+        return new Promise (async (resolve, reject) => {
+            try {
+                const db = await init();
+                const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
+                console.log(gameToUpdate)
+                let player_answers = gameToUpdate.all_answers || []
+                let new_answers = player_answers.concat({player: player, answers: answers})
+                await db.collection('games').updateOne({ _id: ObjectId(id) },
+                    {
+                      $set: { all_answers: new_answers },
+                      $currentDate: { lastModified: true }
+                    }
+                 )
+                resolve('inserted answers')
+            } catch (err) {
+                reject(`Error updating answers: ${err.message}`)
+            }
+        })
+    }
+
+    static getResults(id){
+        return new Promise (async (resolve, reject) => {
+            try {
+                const db = await init();
+                const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
+                const allAnswers = gameToUpdate.all_answers
+                const results = gameToUpdate.questions.results
+                const res = allAnswers.map(allAns => allAns.answers.map((a, i) => ({
+                    player: allAns.player,
+                    player_answer: a,
+                    correct_answer: results[i].correct_answer,
+                    correct: results[i].correct_answer === a
+                  })))
+                resolve(res)
+            } catch (err) {
+                reject(`Error updating answers: ${err.message}`)
             }
         })
     }
