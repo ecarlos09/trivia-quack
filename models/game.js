@@ -20,20 +20,6 @@ class Game {
         this.questions = data.questions.results
     }
 
-    static get all(){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const dbData = await db.collection('games').find({}).toArray()
-                const games = dbData.map(g => ({id: g._id}))
-                if (!games.length) { throw new Error('No games found')}
-                resolve(games);
-            } catch (err) {
-                reject(`Error retrieving games: ${err.message}`)
-            }
-        })
-    }
-
     static findById(id){
         return new Promise (async (resolve, reject) => {
             try {
