@@ -31,8 +31,4 @@ const postGame = async (req, res) => {
     }
 };
 
-
-
-
-
 module.exports = { getAll, getById, postGame };
