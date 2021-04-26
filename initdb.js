@@ -1,6 +1,5 @@
 const { MongoClient } = require('mongodb')
 const connectionUrl = process.env.DB_CONNECTION;
-// const connectionUrl = 'mongodb://localhost:27017/doggos'
 
 const dbName = process.env.DB_NAME
 
