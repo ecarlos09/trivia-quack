@@ -9,8 +9,8 @@ server.get('/', (req, res) => res.send('Welcome'));
 
 // Game server setup
 const gameServer = require("http").createServer(server);
-const gamesRoutes = require('./mvc/routes/gamesRoutes');
-server.use('/games', gamesRoutes);
+// const gamesRoutes = require('./mvc/routes/gamesRoutes');
+// server.use('/games', gamesRoutes);
     // Integrate http server with new instance of socket.io
 const io = require('socket.io')(gameServer, {
     cors: {
