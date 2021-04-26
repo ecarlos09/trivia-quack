@@ -1,16 +1,16 @@
 const express = require('express');
 const cors = require('cors');
 
-const server = express();
-server.use(cors());
-server.use(express.json());
+const app = express();
+app.use(cors());
+app.use(express.json());
 // Set up root route
-server.get('/', (req, res) => res.send('Welcome'));
+app.get('/', (req, res) => res.send('Welcome'));
 
 // Game server setup
-const gameServer = require("http").createServer(server);
-const gameRoutes = require('./mvc/routes/gameRoutes');
-gameServer.use('/games', gameRoutes);
+const gameServer = require("http").createServer(app);
+const gamesRoutes = require('./mvc/routes/gamesRoutes');
+app.use('/games', gamesRoutes);
     // Integrate http server with new instance of socket.io
 const io = require('socket.io')(gameServer, {
     cors: {
@@ -40,4 +40,4 @@ io.on('connection', socket => {
 
 });
 
-module.exports = server
+module.exports = app;
