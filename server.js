@@ -35,8 +35,11 @@ io.on('connection', socket => {
     // *************************************************************************************
     // HANDLE USER ENTERS ROOM
     socket.on("disconnect", () => {
-        io.to(roomId).emit('count', io.sockets.adapter.rooms.get(roomId) ? io.sockets.adapter.rooms.get(roomId).size : 0)
-        io.to(roomId).emit('admin-message', `${socket.id} has left`)
+        // io.to(roomId).emit('count', io.sockets.adapter.rooms.get(roomId) ? io.sockets.adapter.rooms.get(roomId).size : 0)
+        if (io.sockets.adapter.rooms.get(roomId)) {
+            io.to(roomId).emit('players-in-room', Array.from(io.sockets.adapter.rooms.get(roomId)))
+        }
+        // io.to(roomId).emit('admin-message', `${socket.id} has left`)
     });
 
 })
