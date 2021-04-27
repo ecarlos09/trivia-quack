@@ -25,6 +25,13 @@ io.on('connection', socket => {
         socket.on('new-message', ({ username, message }) => {
             io.in(roomId).emit('incoming-message', { username, message });
         })
+
+        //handle ready function
+        socket.on('ready', (socketId) => {
+            console.log(socketId + " is ready!")
+            io.to(roomId).emit('player-ready', socketId)
+        })
+
     // *************************************************************************************
     // HANDLE USER ENTERS ROOM
     socket.on("disconnect", () => {
