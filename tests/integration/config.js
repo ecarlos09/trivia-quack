@@ -9,9 +9,10 @@ const testSeed = fs.readFileSync(__dirname + '/test_seeds.js').toString();
 const resetTestDB = () => {
   return new Promise(async (resolve, reject) => {
     try {
-      let db = await MongoClient.connect(connectionUrl);
+      let client = await MongoClient.connect(connectionUrl);
       console.log("connected to database!", dbName);
       console.log(db)
+      const db = client
       await db.collection('games').insertMany([
         {greeting: 'hello'}
     ]);
