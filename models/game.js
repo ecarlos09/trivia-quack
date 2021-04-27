@@ -55,11 +55,13 @@ class Game {
             try {
                 const db = await init();
                 const url = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=${type}`
+                console.log(url)
                 let { data } = await axios.get(url)
+                if (data.response_code > 0) {throw Error('no questions found, try again')}
                 const newGame = db.collection('games').insertOne({questions: data})
                 resolve(newGame);
             } catch (err) {
-                reject(`Error retrieving games: ${err.message}`)
+                reject(`Error creating game: ${err.message}`)
             }
         })
     }
