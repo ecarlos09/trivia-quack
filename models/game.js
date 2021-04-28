@@ -159,6 +159,9 @@ class Game {
                 const players = gameToResult.players
 
                 function countScore(){
+                console.log(players)
+                
+                console.log(gameToResult);
                 let scoreRes = []
                 players.forEach(player => {
                 let count = 0
