@@ -12,16 +12,26 @@ io.on('connection', socket => {
     socket.on('create', (roomId) => {
         console.log('created room', roomId)
         socket.join(roomId);
-        io.to(roomId).emit('admin-message', `${socket.id} has joined`)
-        io.to(roomId).emit('count', io.sockets.adapter.rooms.get(roomId) ? io.sockets.adapter.rooms.get(roomId).size : 0)
+        console.log(Array.from(io.sockets.adapter.rooms.get(roomId)))
+        io.to(roomId).emit('players-in-room', Array.from(io.sockets.adapter.rooms.get(roomId)))
+        // io.to(roomId).emit('count', io.sockets.adapter.rooms.get(roomId) ? io.sockets.adapter.rooms.get(roomId).size : 0)
         socket.on('new-message', ({ username, message }) => {
             io.in(roomId).emit('incoming-message', { username, message });
+        })
+
+        //handle ready function
+        socket.on('ready', (socketId) => {
+            console.log(socketId + " is ready!")
+            io.to(roomId).emit('player-ready', socketId)
         })
     // *************************************************************************************
         // HANDLE USER ENTERS ROOM
         socket.on("disconnect", () => {
-            io.to(roomId).emit('count', io.sockets.adapter.rooms.get(roomId) ? io.sockets.adapter.rooms.get(roomId).size : 0)
-            io.to(roomId).emit('admin-message', `${socket.id} has left`)
+            // io.to(roomId).emit('count', io.sockets.adapter.rooms.get(roomId) ? io.sockets.adapter.rooms.get(roomId).size : 0)
+            if (io.sockets.adapter.rooms.get(roomId)) {
+                io.to(roomId).emit('players-in-room', Array.from(io.sockets.adapter.rooms.get(roomId)))
+            }
+            // io.to(roomId).emit('admin-message', `${socket.id} has left`)
         });
     })
 });
