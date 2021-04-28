@@ -2,11 +2,35 @@ const router = require('express').Router();
 
 const { Game, Questions } = require('../models/game');
 
+router.get('/', async (req, res) => {
+    try {
+        const id = req.params.id
+        const games = await Game.all
+        res.status(200).json({games})
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ error: err })
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id
         const game = await Game.findById(id)
         res.status(200).json(new Questions(game))
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ error: err })
+    }
+});
+
+
+router.get('/:id/simple', async (req, res) => {
+    try {
+        const id = req.params.id
+        const game = await Game.findById(id)
+        const q = game.questions.results[0]
+        res.status(200).json({completed: !!game.all_answers, started: !!game.players, type: q.type, category: q.category, length: game.questions.results.length  })
     } catch(err) {
         console.error(err);
         res.status(500).json({ error: err })

@@ -20,6 +20,19 @@ class Game {
         this.questions = data.questions.results
     }
 
+        static get all(){
+        return new Promise (async (resolve, reject) => {
+            try {
+                const db = await init();
+                const collection = await db.collection('games')
+                const games = await collection.find({})
+                resolve(games.toArray());
+            } catch (err) {
+                reject(`Error retrieving game: ${err.message}`)
+            }
+        })
+    }
+
     static findById(id){
         return new Promise (async (resolve, reject) => {
             try {
@@ -42,11 +55,13 @@ class Game {
             try {
                 const db = await init();
                 const url = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=${type}`
+                console.log(url)
                 let { data } = await axios.get(url)
+                if (data.response_code > 0) {throw Error('no questions found, try again')}
                 const newGame = db.collection('games').insertOne({questions: data})
                 resolve(newGame);
             } catch (err) {
-                reject(`Error retrieving games: ${err.message}`)
+                reject(`Error creating game: ${err.message}`)
             }
         })
     }
