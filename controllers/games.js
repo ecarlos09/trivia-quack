@@ -30,7 +30,7 @@ router.get('/:id/simple', async (req, res) => {
         const id = req.params.id
         const game = await Game.findById(id)
         const q = game.questions.results[0]
-        res.status(200).json({completed: !!game.all_answers, started: !!game.players, type: q.type, category: q.category, length: game.questions.results.length  })
+        res.status(200).json({completed: !!game.all_answers, started: !!game.players, type: q.type, category: q.category, length: game.questions.results.length })
     } catch(err) {
         console.error(err);
         res.status(500).json({ error: err })
