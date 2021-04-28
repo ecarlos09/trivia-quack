@@ -13,6 +13,16 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/scores', async (req, res) => {
+    try {
+        const scores = await Game.allScores
+        res.status(200).json({scores})
+    } catch(err) {
+        console.error(err);
+        res.status(500).json({ error: err })
+    }
+});
+
 router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id
