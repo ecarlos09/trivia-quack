@@ -7,6 +7,7 @@ class Questions {
         this.id = data._id
         this.questions = data.questions.results.map((result) => ({
             category: result.category,
+            difficulty: result.difficulty,
             type: result.type,
             question: result.question,
             possible_answers: result.incorrect_answers.concat([result.correct_answer])
@@ -195,6 +196,7 @@ class Game {
             }
         })
     }
+
 }
 
 module.exports = { Game, Questions};
