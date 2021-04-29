@@ -1,4 +1,4 @@
-const { init } = require("../initdb");
+const { init } = require("../../initdb");
 const { ObjectId } = require('mongodb'); 
 const axios = require('axios')
 
