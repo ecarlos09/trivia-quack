@@ -14,6 +14,9 @@
     "coverage": "jest --setupFiles ./tests/integration/config.js --testPathPattern=/integration/ --coverage",
     "unitCoverage": "jest --testPathPattern=/unit/ --coverage"
   },
+  "jest": {
+    "preset": "@shelf/jest-mongodb"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
