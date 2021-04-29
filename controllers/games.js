@@ -57,16 +57,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.post('/:id/players/:player', async (req, res) => {
-    try {
-        const game = await Game.addPlayers(req.params.id, req.params.player)
-        res.status(200).json(game)
-    } catch(err) {
-        console.error(err);
-        res.status(500).json({ error: err })
-    }
-});
-
 router.post('/:id/players/:player/answers', async (req, res) => {
     try {
         const game = await Game.addAnswers(req.params.id, req.params.player, req.body)
