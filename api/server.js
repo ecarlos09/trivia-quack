@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get('/', (req, res) => res.send("Welcome to the Express server for Trivia Quack!"));
+app.get('/', (req, res) => res.send("Welcome to the Express server for Trivia Duck!"));
 
 const gamesRoutes = require("./mvc/routes/gamesRoutes")
 app.use('/games', gamesRoutes)
