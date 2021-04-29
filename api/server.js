@@ -6,7 +6,7 @@ app.use(cors());
 
 app.get('/', (req, res) => res.send("Welcome to the Express server for Trivia Quack!"));
 
-const gamesController = require("./controllers/games")
-app.use('/games', gamesController)
+const gamesRoutes = require("./mvc/routes/gamesRoutes")
+app.use('/games', gamesRoutes)
 
 module.exports = app;
