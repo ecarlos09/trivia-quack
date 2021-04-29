@@ -7,12 +7,10 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.scss';
 
 ReactDOM.render(
-        <Provider store={store}>
             <Router>
                 <Provider store={store}>
                     <App />
                 </Provider>                    
-            </Router>
-        </Provider>,
+            </Router>,
     document.getElementById('root')
 );

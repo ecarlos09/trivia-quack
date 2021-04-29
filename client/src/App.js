@@ -1,6 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom';
-import { Homepage, Lobby, Create, Result, Questions, Highscore, GameRoom } from './pages';
+import { Homepage, Lobby, Create, Result, Questions, Highscore, GameRoom, JoinRoom } from './pages';
 
 const App = () => {
     return (
@@ -10,6 +10,9 @@ const App = () => {
                 </Route>
                 <Route path="/create">
                     <Create />
+                </Route>
+                <Route path="/join">
+                    <JoinRoom />
                 </Route>
                 <Route path="/lobby/:id">
                     <Lobby />

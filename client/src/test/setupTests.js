@@ -7,12 +7,12 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 
-import reducer from '../reducers'
+import myReducer from '../features'
 import { MemoryRouter } from 'react-router-dom';
 
 const TestProviders = ({ initState }) => {
     initState ||= { users: [], loading: false }
-    const testStore = createStore(() => reducer(initState, { type: '@@INIT' }), applyMiddleware(thunk))
+    const testStore = createStore(() => myReducer(initState, { type: '@@INIT' }), applyMiddleware(thunk))
 
     return ({ children }) => (
         <Provider store={testStore}>

@@ -5,4 +5,5 @@ export { default as Result } from './Result';
 export { default as Highscore } from './Highscore';
 export { default as Questions } from './Questions';
 export { default as GameRoom } from './GameRoom';
+export { default as JoinRoom } from './JoinRoom'
 
