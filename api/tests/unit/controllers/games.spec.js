@@ -1,4 +1,4 @@
-const gamesController = require('../../../mvc/controllers/games')
+const gamesControllers = require('../../../mvc/controllers/games')
 const { Game, Questions } = require('../../../mvc/models');
 
 const mockSend = jest.fn();
@@ -11,16 +11,30 @@ describe('games controller', () => {
 
     afterAll(() => jest.resetAllMocks());
 
-    // describe('index', () => {
-    //     test('it returns dogs with a 200 status code', async () => {
-    //         let testDogs = ['d1', 'd2']
-    //         jest.spyOn(Dog, 'all', 'get')
-    //              .mockResolvedValue(testDogs);
-    //         await dogsController.index(null, mockRes);
-    //         expect(mockStatus).toHaveBeenCalledWith(200);
-    //         expect(mockJson).toHaveBeenCalledWith(testDogs);
-    //     })
-    // });
+    describe('getGames', () => {
+        it('returns a 200 status code when fecthing all games', async () => {
+            // let testGames = {"games":[{
+            //     "_id":"608a8282876a0500151a0b89",
+            //     "questions":{
+            //         "response_code":0,
+            //         "results":[
+            //             {
+            //                 "category":"Entertainment: Music",
+            //                 "type":"boolean",
+            //                 "difficulty":"medium",
+            //                 "question":"Soulja Boy&#039;s &#039;Crank That&#039; won a Grammy for Best Rap Song in 2007.",
+            //                 "correct_answer":"False",
+            //                 "incorrect_answers":["True"]
+            //             },
+            //         ]
+            //     }
+            // }]}
+            // jest.spyOn(Game, 'all', 'get').mockResolvedValue(testGames);
+            await gamesControllers.getGames(null, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+            // expect(mockJson).toHaveBeenCalledWith(testGames);
+        })
+    })
 
     // describe('show', () => {
     //     test('it returns a dog with a 200 status code', async () => {
