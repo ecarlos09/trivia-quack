@@ -1,4 +1,4 @@
-function myReducer (state = {players: [], answers: []}, action) {
+const myReducer = (state = {players: [], answers: []}, action) => {
     switch (action.type) {
       case 'ADD_SOCKET':
         return ({
@@ -11,7 +11,7 @@ function myReducer (state = {players: [], answers: []}, action) {
             players: action.payload.map(player => ({player: player, ready: false}))
         })
           case 'PLAYER_READY':
-            const playerToToggle = state.players.find(p => p.player === action.payload)
+            const playerToToggle = state.players.find(p => p.player.id === action.payload)
             const likeIdx = state.players.indexOf(playerToToggle)
             const updatedPlayers = [ 
                 ...state.players.slice(0, likeIdx),
@@ -36,11 +36,8 @@ function myReducer (state = {players: [], answers: []}, action) {
           ...state,
           answers: state.answers.concat([action.payload])
         })
-      case 'SET_ERROR' :
+      case 'SET_ERROR':
         return 'error'
-      case 'ADD_MESSAGE':
-        console.log(action.payload)
-        return state
       default:
         return state
     }

@@ -46,8 +46,7 @@ const Lobby = () => {
 
   useEffect(() => {
     if (currentPlayers.length > 0 && currentPlayers.every(player => player.ready === true)) {
-      const timeout = (currentPlayers.findIndex(p => p.player == socket.socket.id) + 1) * 3000
-      setTimeout(() => axios.post(`${API_ADDRESS}/games/${id}/players/${socket.socket.id}`, timeout))
+      // axios.post(`${API_ADDRESS}/games/${id}/players/${socket.socket.id}`)
       history.push(`/game/${id}`)
       dispatch(allNotReady())
     }
@@ -57,10 +56,15 @@ const Lobby = () => {
     socket.socket.emit("ready", socket.socket.id)
   }
 
-  const returnPlayer = currentPlayers.map(player => {
-      return <PlayerCard player={player.player} me={player.player === socket.socket.id} icon={getIcon()} ready={player.ready} />
+  function handleUsername(){
+    socket.socket.emit("username", username)
+  }
+
+  const returnPlayer = currentPlayers.map((p, i) => {
+      return <PlayerCard key={i} player={p.player.id} username={p.player.username} me={p.player.id === socket.socket.id} icon={getIcon(p.player.icon)} ready={p.ready} />
   });
 
+  const [username, setUsername] = useState("")
   return (
     <main id="lobby" className="container">
       {gameInfo && (
@@ -69,6 +73,8 @@ const Lobby = () => {
           <p>Type: {gameInfo.type}</p>
           <p>Length: {gameInfo.length}</p>
           <p>Game ID: {id}</p>
+          <input type="text" value={username} placeholder={"set username..."} onChange={(e) => setUsername(e.target.value)}/>
+          <button onClick={handleUsername}>set</button>
         </section>
       )}
 

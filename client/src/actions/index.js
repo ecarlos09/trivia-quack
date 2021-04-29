@@ -1,9 +1,6 @@
 import axios from 'axios';
 import { API_ADDRESS } from './globalVars'
-// write redux actions here
-// e.g.
-// export const addUser = newUser => ({ type: 'ADD_USER', payload: newUser })
-export const addMessage = ( user, message ) => ({ type: 'ADD_MESSAGE', payload: {user, message} })
+
 
 export const addSocket = socket => ({type: 'ADD_SOCKET', payload: socket})  
 

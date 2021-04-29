@@ -1,6 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom';
-import { Homepage, Lobby, Create, Result, Questions, Highscore, GameRoom, JoinRoom } from './pages';
+import { Homepage, Lobby, Create, Result, Highscore, GameRoom, JoinRoom } from './pages';
 
 const App = () => {
     return (
@@ -19,9 +19,6 @@ const App = () => {
                 </Route>
                 <Route path="/game/:id">
                     <GameRoom />
-                </Route>
-                <Route path="/questions">
-                    <Questions />
                 </Route>
                 <Route path="/results/:id">
                     <Result />

@@ -11,7 +11,7 @@ import icon10 from '../../images/player-10.png';
 
 const icons = [icon1, icon2, icon3, icon4, icon5, icon6, icon7, icon8, icon9, icon10];
 
-export const getIcon = () => {
-    let icon = icons[Math.floor(Math.random() * icons.length)];
+export const getIcon = (idx) => {
+    let icon = icons[idx];
     return icon;
 }

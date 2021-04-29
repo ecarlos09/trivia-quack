@@ -2,6 +2,31 @@ const { init } = require("../initdb");
 const { ObjectId } = require('mongodb'); 
 const axios = require('axios')
 
+function countPoints(score, difficulty, type) {
+    let difM
+    let typeM
+    switch (difficulty) {
+        case 'medium':
+            difM = 2
+            break;
+        case 'hard':
+            difM = 3
+            break;
+        default:
+            difM = 1
+            break;
+    }
+    switch (type) {
+        case 'boolean':
+            typeM = 1
+            break;
+        default:
+            typeM = 2
+            break;
+    }
+    return score * difM * typeM *  100 
+}   
+
 class Questions {
     constructor(data){
         this.id = data._id
@@ -16,219 +41,155 @@ class Questions {
 }
 
 class Game {
-    constructor(data){
-        this.id = data._id
-        this.questions = data.questions.results
-    }
+  constructor(data) {
+    this.id = data._id;
+    this.questions = data.questions.results;
+  }
 
-        static get all(){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const collection = await db.collection('games')
-                const games = await collection.find({})
-                resolve(games.toArray());
-            } catch (err) {
-                reject(`Error retrieving game: ${err.message}`)
-            }
-        })
-    }
+  static get all() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init();
+        const collection = await db.collection("games");
+        const games = await collection.find({});
+        resolve(games.toArray());
+      } catch (err) {
+        reject(`Error retrieving game: ${err.message}`);
+      }
+    });
+  }
 
-    static findById(id){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const collection = await db.collection('games')
-                const game = await collection.findOne({ _id: ObjectId(id) })
-                resolve(game);
-            } catch (err) {
-                reject(`Error retrieving game: ${err.message}`)
-            }
-        })
-    }
+  static findById(id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init();
+        const collection = await db.collection("games");
+        const game = await collection.findOne({ _id: ObjectId(id) });
+        resolve(game);
+      } catch (err) {
+        reject(`Error retrieving game: ${err.message}`);
+      }
+    });
+  }
 
-    static create(query){
-        return new Promise (async (resolve, reject) => {
-            const amount = query.amount || Math.floor(Math.random() * 22) + 3
-            const category = query.category || Math.floor(Math.random() * 23) + 9
-            const difficulty = query.difficulty || ['easy','medium','hard'][Math.floor(Math.random() * 3)]
-            const type = query.type || ['boolean','multiple'][Math.round(Math.random())]
-            try {
-                const db = await init();
-                const url = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=${type}`
-                console.log(url)
-                let { data } = await axios.get(url)
-                if (data.response_code > 0) {throw Error('no questions found, try again')}
-                const newGame = db.collection('games').insertOne({questions: data})
-                resolve(newGame);
-            } catch (err) {
-                reject(`Error creating game: ${err.message}`)
-            }
-        })
-    }
+  static create(query) {
+    return new Promise(async (resolve, reject) => {
+      const amount = query.amount || Math.floor(Math.random() * 22) + 3;
+      const category = query.category || Math.floor(Math.random() * 23) + 9;
+      const difficulty =
+        query.difficulty ||
+        ["easy", "medium", "hard"][Math.floor(Math.random() * 3)];
+      const type =
+        query.type || ["boolean", "multiple"][Math.round(Math.random())];
+      try {
+        const db = await init();
+        const url = `https://opentdb.com/api.php?amount=${amount}&category=${category}&difficulty=${difficulty}&type=${type}`;
+        console.log(url);
+        let { data } = await axios.get(url);
+        if (data.response_code > 0) {
+          throw Error("no questions found, try again");
+        }
+        const newGame = db.collection("games").insertOne({ questions: data });
+        resolve(newGame);
+      } catch (err) {
+        reject(`Error creating game: ${err.message}`);
+      }
+    });
+  }
 
-    static addPlayers(id, player){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
-                console.log(gameToUpdate)
-                let players = gameToUpdate.players || []
-                let newPlayers = players.concat(player)
-                await db.collection('games').updateOne({ _id: ObjectId(id) },
-                    {
-                      $set: { players: newPlayers },
-                      $currentDate: { lastModified: true }
-                    }
-                 )
-                resolve(`inserted player:${player} for game:${id}`)
-            } catch (err) {
-                reject(`Error updating answers: ${err.message}`)
-            }
-        })
-    }
+  static addAnswers(id, player, data) {
+    const answers = data.answers
+    const username = data.username
+    const icon = data.icon
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init();
+        const gameToUpdate = await db
+          .collection("games")
+          .findOne({ _id: ObjectId(id) });
+        const allAnswers = gameToUpdate.all_answers;
+        const results = gameToUpdate.questions.results;
+        const res = results.map((r, i) => ({
+          question: r.question,
+          all_answers: r.incorrect_answers.concat([r.correct_answer]),
+          correct_answer: r.correct_answer,
+          player_answer: answers[i],
+          player_correct: answers[i] === r.correct_answer,
+        }));
+        const count = res.filter((r) => r.player_correct === true).length;
+        const points = countPoints(
+          count,
+          results[0].difficulty,
+          results[0].type
+        );
+        db.collection("scores").insertOne({
+          gameId: gameToUpdate._id,
+          count,
+          points,
+          player,
+          username,
+          icon,
+          answers: res,
+        });
+      } catch (err) {
+        reject(`Could not add answers: ${err.message}`);
+      }
+    });
+  }
 
-    static addAnswers(id, player, answers){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const gameToUpdate = await db.collection('games').findOne({ _id: ObjectId(id) })
-                console.log(gameToUpdate)
-                let player_answers = gameToUpdate.all_answers || []
-                let new_answers = player_answers.concat({player: player, answers: answers})
-                await db.collection('games').updateOne({ _id: ObjectId(id) },
-                    {
-                      $set: { all_answers: new_answers },
-                      $currentDate: { lastModified: true }
-                    }
-                 )
-                const gameToResult = await db.collection('games').findOne({ _id: ObjectId(id) })
-                const allAnswers = gameToResult.all_answers
-                const results = gameToResult.questions.results
-                const res = results.map((r, i) => ({
-                    question: r.question,
-                    all_answers: r.incorrect_answers.concat([r.correct_answer]),
-                    correct_answer: r.correct_answer,
-                    player_answers: allAnswers.map((p, j) => ({
-                      player: p.player,
-                      answer: p.answers[i],
-                      correct: p.answers[i] === r.correct_answer
-                    }))
-                  }))
+  static getResults(id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init();
+        const game = await db.collection("games").findOne({ _id: ObjectId(id) });
+        const scores = await db.collection("scores").find({ gameId: ObjectId(id) }).toArray();
+        let questions = scores[0].answers.map((q) => q.question);
+        const answers = questions.map((q, i) =>
+        scores.map((y) => {
+            const item = y.answers[i];
+            return {
+              answer: item.player_answer,
+              correct: item.player_correct,
+              player: y.player,
+              username: y.username
+            };
+          })
+        );
 
-                const players = gameToResult.players
-                const difficulty = gameToResult.questions.results[0].difficulty
-                const type = gameToResult.questions.results[0].type
-                const noOfQs = gameToResult.questions.length
-                const score = gameToResult.questions.results[0].score
+        const data = game.questions.results.map((g, i) => {
+          return {
+            question: g.question,
+            correct_answer: g.correct_answer,
+            all_answers: g.incorrect_answers.concat([g.correct_answer]),
+            player_answers: answers[i],
+          };
+        });
+        const scoresToSend = scores.map(s => ({name: s.player, username: s.username, icon: s.icon, count: s.count, points: s.points}))
+        resolve({data: data, scores: scoresToSend});
+      } catch (err) {
+        reject(`Error getting results: ${err.message}`);
+      }
+    });
+  }
 
-                function countScore(){
-                let returnCount
-                players.filter(p => p === player).forEach(player => {
-                let count = 0
-                res.forEach(item => {
-                    item.player_answers.forEach(playerAnswer => {
-                        if (playerAnswer.correct && playerAnswer.player === player) {
-                    count++
-                    }
-                    })
-                })
-                returnCount = count
-                })
-                return returnCount
-                }
-
-                function countPoints () {
-                players.filter(p => p === player).forEach( () => {
-                    let typeFactor
-                    let diffFactor
-
-                    if (type === "boolean") {
-                            return typeFactor = 1
-                          } else if (gameType === "multiple") {
-                            return typeFactor = 2
-                          }
-                          
-                    if (difficulty === "easy") {
-                            return diffFactor = 1
-                          } else if (difficulty === "medium") {
-                            return diffFactor = 2
-                          } else if (difficulty === "hard") {
-                            return diffFactor = 3
-                          }
-
-                    let playerPoints = noOfQs * typeFactor * diffFactor * score
-                    return playerPoints 
-                })
-                }
-                 db.collection('scores').insertOne({player: player, score: countScore(), points: countPoints()})
-                resolve('inserted answers')
-            } catch (err) {
-                reject(`Error updating answers: ${err.message}`)
-            }
-        })
-    }
-
-    static getResults(id){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const gameToResult = await db.collection('games').findOne({ _id: ObjectId(id) })
-                const allAnswers = gameToResult.all_answers
-                const results = gameToResult.questions.results
-                const res = results.map((r, i) => ({
-                    question: r.question,
-                    all_answers: r.incorrect_answers.concat([r.correct_answer]),
-                    correct_answer: r.correct_answer,
-                    player_answers: allAnswers.map((p, j) => ({
-                      player: p.player,
-                      answer: p.answers[i],
-                      correct: p.answers[i] === r.correct_answer
-                    }))
-                  }))
-                const players = gameToResult.players
-
-                function countScore(){
-                console.log(players)
-                
-                console.log(gameToResult);
-                let scoreRes = []
-                players.forEach(player => {
-                let count = 0
-                let resObj = {name: player}
-                res.forEach(item => {
-                    item.player_answers.forEach(playerAnswer => {
-                        if (playerAnswer.correct && playerAnswer.player === player) {
-                    count++
-                    }
-                    })
-                })
-                resObj.count = count
-                scoreRes.push(resObj)
-                })
-                return scoreRes
-                }
-                const scores = countScore()
-                resolve({data: res, scores: scores})
-            } catch (err) {
-                reject(`Error updating answers: ${err.message}`)
-            }
-        })
-    }
-
-    static get allScores(){
-        return new Promise (async (resolve, reject) => {
-            try {
-                const db = await init();
-                const collection = await db.collection('scores')
-                const games = await collection.find({})
-                resolve(games.toArray());
-            } catch (err) {
-                reject(`Error retrieving scores: ${err.message}`)
-            }
-        })
-    }
-
+  static get allScores() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const db = await init();
+        const collection = await db.collection("scores");
+        const data = (await collection.find({}).toArray()).map((r) => ({
+          player: r.player,
+          count: r.count,
+          points: r.points,
+          username: r.username,
+          icon: r.icon
+        }));
+        resolve(data);
+      } catch (err) {
+        reject(`Error retrieving scores: ${err.message}`);
+      }
+    });
+  }
 }
 
 module.exports = { Game, Questions};
