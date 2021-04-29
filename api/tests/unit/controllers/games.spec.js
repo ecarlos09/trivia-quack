@@ -1,5 +1,5 @@
 const gamesControllers = require('../../../mvc/controllers/games')
-const { Game, Questions } = require('../../../mvc/models');
+const { Game, Questions } = require('../../../mvc/models/game');
 
 const mockSend = jest.fn();
 const mockJson = jest.fn();
@@ -82,9 +82,48 @@ describe('games controller', () => {
                 .mockResolvedValue(testGame);
                 
             const mockReq = { params: { id: gameId } }
-            await gamesControllers.findById(mockReq, mockRes);
+            await gamesControllers.getById(mockReq, mockRes);
             expect(mockStatus).toHaveBeenCalledWith(200);
             expect(mockJson).toHaveBeenCalledWith(gameId);
+        })
+    });
+
+    describe('getSimple', () => {
+        test('it returns simplified game data with a 200 status code', async () => {
+            const testId = "608a9d6c876a0500151a0bba";
+            let testGame = {
+                "id":"608a9d6c876a0500151a0bba",
+                "questions":[
+                    {
+                        "category":"Sports",
+                        "difficulty":"medium",
+                        "type":"multiple",
+                        "question":"What is the highest belt you can get in Taekwondo?",
+                        "possible_answers":["White","Red","Green","Black"]
+                    },
+                    {
+                        "category":"Sports",
+                        "difficulty":"medium",
+                        "type":"multiple",
+                        "question":"What is the oldest team in the NFL?",
+                        "possible_answers":["Chicago Bears","Green Bay Packers","New York Giants","Arizona Cardinals"]
+                    },
+                    {
+                        "category":"Sports",
+                        "difficulty":"medium",
+                        "type":"multiple",
+                        "question":"Which sport is NOT traditionally played during the Mongolian Naadam festival?",
+                        "possible_answers":["Wrestling","Archery","Horse-Racing","American Football"]
+                    }
+                ]
+            }
+            jest.spyOn(Game, 'findById')
+                .mockResolvedValue(testGame);
+                
+            const mockReq = { params: { id: testId } }
+            await gamesControllers.getSimple(mockReq, mockRes);
+            expect(mockStatus).toHaveBeenCalledWith(200);
+            expect(mockJson).toHaveBeenCalledWith(testId);
         })
     });
 

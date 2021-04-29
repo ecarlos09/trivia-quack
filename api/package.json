@@ -10,17 +10,15 @@
     "start": "node index.js",
     "dev": "nodemon --legacy-watch index.js",
     "test": "jest --setupFiles ./tests/integration/config.js --testPathPattern=/integration/ --watchAll --detectOpenHandles --runInBand --verbose",
-    "unitTests": "jest --testPathPattern=/unit/ --watchAll --verbose",
+    "unitTests": "jest --setupFiles ./tests/unit/jest.config.js ./tests/unit/jest-mongodb-config.js --testPathPattern=/unit/ --watchAll --verbose",
     "coverage": "jest --setupFiles ./tests/integration/config.js --testPathPattern=/integration/ --coverage",
     "unitCoverage": "jest --testPathPattern=/unit/ --coverage"
-  },
-  "jest": {
-    "preset": "@shelf/jest-mongodb"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@shelf/jest-mongodb": "^1.2.4",
     "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "supertest": "^6.1.3"
