@@ -11,6 +11,7 @@ const resetTestDB = () => {
     try {
       const db = await init();
       await db.collection('games').removeMany({})
+      await db.collection('scores').removeMany({})
       await db.collection('games').insertOne({
         _id: ObjectId("6088064e9a068b002cf601b3"),
         questions: {

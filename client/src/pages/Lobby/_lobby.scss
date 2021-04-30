@@ -21,3 +21,14 @@
 .ready-button:hover {
   color: white;
 }
+
+.player-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.name-wrapper {
+  margin: 10px 0;
+  text-align: center;
+}

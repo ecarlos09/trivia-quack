@@ -1,6 +1,11 @@
 #results {
   margin-top: 25px;
   color: white;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 25px;
+  padding-bottom: 50px;
 
   a {
     width: 50px;
