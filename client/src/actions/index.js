@@ -18,7 +18,6 @@ export const getAnswers = gameId => {
             const res = await fetch(`${API_ADDRESS}/games/${gameId}`)
             const data = await res.json()
             let newQuestions = data.questions.map(question => question)
-            console.log(newQuestions)
             dispatch({
                 type: 'LOAD_QUESTIONS',
                 payload: newQuestions
