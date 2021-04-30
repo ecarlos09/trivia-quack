@@ -52,7 +52,7 @@ const CreateForm = ({ createRoom }) => {
     <form className="create-form text-center" onSubmit={handleSubmit}>
       <div id="option-1" className={ showOption1 ? "" : "d-none"}>
           <label htmlFor="category">Select a Category for your quiz:</label>
-          <select name="category" id="category" value={category} onChange={selectCategory}>
+          <select name="category" aria-label="menuitem" id="category" value={category} onChange={selectCategory}>
             <option value="9">General Knowledge</option>
             <option value="21">Sports</option>
             <option value="26">Celebrities</option>
