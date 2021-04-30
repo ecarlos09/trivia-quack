@@ -1,16 +1,18 @@
+import React from 'react';
 import  Options from '.';
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 
 describe('Options',() => {
+  const [ mockDisabled, setMockDisabled ] = useState(false);
     let optionsStub1 = {A:'True', B:'False'};
     let optionsStub2 = {A:'Test1', B:'Test2', C:'Test3', D:'Test4' };
-    let disabledStub = false;
-    let setDisabledStub;
+    // let disabledStub = false;
+    // let setDisabledStub;
 
   test('it renders a submit button', () => {
-    renderWithReduxProvider(<Options options={optionsStub1} disabled={disabledStub} setDisabled={setDisabledStub}/>)
+    renderWithReduxProvider(<Options options={optionsStub1} disabled={mockDisabled} setDisabled={setMockDisabled}/>)
     let btn = screen.getByRole('button',{name: 'submit'});
     expect(btn).toBeInTheDocument();
   })
