@@ -3,15 +3,16 @@ import {default as ScoreView} from '.';
 
 
 describe('ScoreView', () => {
-  let playersStub = {}
-  
+
   beforeEach(() => {
-    renderWithReduxProvider(<ScoreView/>)
+    let playersStub = [{name:'testName', count:'100'}];
+    renderWithReduxProvider(<ScoreView players={playersStub}/>)
   })
 
   test('it renders a player icon', () => {
-    //let icon = screen.getByRole('img',{name: 'Player Icon'});
-    let icon = screen.getByAltText('Player Icon');
+    let icon = screen.getByRole('img',{name:'Player Icon'});
     expect(icon).toBeInTheDocument();
   })
+
+
 })
