@@ -2,10 +2,10 @@ import {default as Options} from '.';
 import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-
 describe('Options',() => {
-    let optionsStub1 = {A:'True', B:'False'};
-    let optionsStub2 = {A:'Test1', B:'Test2', C:'Test3', D:'Test4' };
+    let options1 = jest.fn()
+    // let optionsStub1 = {A:'True', B:'False'};
+    // let optionsStub2 = {A:'Test1', B:'Test2', C:'Test3', D:'Test4' };
     let disabledStub = false;
     let setDisabledStub;
     
@@ -13,7 +13,7 @@ describe('Options',() => {
 
   test('it renders a submit button', () => {
     const initState = {questions: []}
-    renderWithReduxProvider(<Options options={optionsStub1} disabled={disabledStub} setDisabled={setDisabledStub}/>, {initState})
+    renderWithReduxProvider(<Options options={options1} disabled={disabledStub} setDisabled={setDisabledStub}/>, {initState})
     let btn = screen.getByRole('button',{name: 'submit'});
     expect(btn).toBeInTheDocument();
   })
