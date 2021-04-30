@@ -20,11 +20,27 @@ describe ('Join Room', () => {
     afterAll(() => {
         window.location = location;
     });
-
+    
+    test('renders appropriate header', () => {
+        const header = screen.getByRole('heading')
+        expect(header.textContent).toContain('Type game ID here to Join Game')
+    })
+    test('input has a corresponding label', () => {
+        const label = screen.getByRole('focus')
+        expect(label.textContent).toContain('Game ID')
+    })
+    test('join game button renders', () => {
+        const btn = screen.getByRole('button')
+        expect(btn.value).toContain('Join Game')
+    })
     test('redirects onClick of Join Game button to correct URL', () =>{
         const gameIdInput = screen.getByLabelText('Game ID')
         const target = `lobby/${gameId}`;
         userEvent.type(gameIdInput, "608bc201193dc100323f9274{enter}")
         expect(window.location.href).toBe(target);
+    })
+    test('image renders on the page', () => {
+        const img = screen.getByRole('img')
+        expect(img).toBeInTheDocument
     })
 })
