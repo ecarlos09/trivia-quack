@@ -98,11 +98,11 @@ class Game {
   }
 
   static addAnswers(id, player, data) {
-    const answers = data.answers
-    const username = data.username
-    const icon = data.icon
     return new Promise(async (resolve, reject) => {
       try {
+        const answers = data.answers
+        const username = data.username
+        const icon = data.icon
         const db = await init();
         const gameToUpdate = await db
           .collection("games")
@@ -122,7 +122,7 @@ class Game {
           results[0].difficulty,
           results[0].type
         );
-        db.collection("scores").insertOne({
+        const score = await db.collection("scores").insertOne({
           gameId: gameToUpdate._id,
           count,
           points,
@@ -131,6 +131,7 @@ class Game {
           icon,
           answers: res,
         });
+        resolve(score)
       } catch (err) {
         reject(`Could not add answers: ${err.message}`);
       }

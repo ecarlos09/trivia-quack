@@ -59,8 +59,8 @@ router.post('/', async (req, res) => {
 
 router.post('/:id/players/:player/answers', async (req, res) => {
     try {
-        const game = await Game.addAnswers(req.params.id, req.params.player, req.body)
-        res.status(200).json(game)
+        const score = await Game.addAnswers(req.params.id, req.params.player, req.body)
+        res.status(200).json({msg: 'success'})
     } catch(err) {
         console.error(err);
         res.status(500).json({ error: err })
