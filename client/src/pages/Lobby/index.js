@@ -67,18 +67,12 @@ const Lobby = () => {
   const [username, setUsername] = useState("")
   return (
     <main id="lobby" className="container">
-      {gameInfo && (
-        <section style={{color: 'white'}}>
-          <p>Category: {gameInfo.category}</p>
-          <p>Type: {gameInfo.type}</p>
-          <p>Length: {gameInfo.length}</p>
-          <p>Game ID: {id}</p>
-          <input type="text" value={username} placeholder={"set username..."} onChange={(e) => setUsername(e.target.value)}/>
-          <button onClick={handleUsername}>set</button>
-        </section>
-      )}
-
+      <div class="name-wrapper">
+        <input type="text" value={username} placeholder={"set username..."} onChange={(e) => setUsername(e.target.value)}/>
+        <button onClick={handleUsername}>set</button>
+      </div>
       <div className="row">
+        
         <div className="col-md-6 text-center align-self-center">
           <button onClick={handleReady} className="ready-button">
             Ready Up
@@ -87,7 +81,9 @@ const Lobby = () => {
         </div>
         <div className="col-md-6">
           <h3>Player List:</h3>
-          {returnPlayer}
+          <div class="player-wrapper">
+            {returnPlayer}
+          </div>
         </div>
       </div>
     </main>

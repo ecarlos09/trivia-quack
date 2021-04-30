@@ -1,5 +1,7 @@
 #game-room {
   height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
   p {
     text-align: center;
   }
@@ -9,13 +11,13 @@
   }
 
   @media (max-width: 500px) {
-    overflow-y: scroll;
+    padding-bottom: 100px;
   }
 }
 
 .theme-planet-1 {
   background-color: rgba(79, 99, 146, 0.5); 
-  z-index: 0;
+  z-index: -2;
 
   button {
     background: rgb(15,27,108);
@@ -27,7 +29,7 @@
 
 .theme-planet-2 {
   background-color: rgb(255,60,90,0.5);
-  z-index: 0;
+  z-index: -2;
 
   button {
     background: rgb(203,0,105);
@@ -39,7 +41,7 @@
 
 .theme-planet-3 {
   background-color: rgba(78,0,114,0.5);
-  z-index: 0;
+  z-index: -2;
 
   button {
     background: rgb(78,0,114);
@@ -49,7 +51,7 @@
 }
 
 .planets {
-  @media (max-width: 500px) {
+  @media (max-width: 800px) {
     display: none;
   }
   height: 200px;
@@ -92,9 +94,10 @@
     width: 125vw;
     height: 125vw;
     left: -12.5vw;
-    top: -112.5vw;
+    top: -114vw;
     border-radius: 50%;
     border: solid 5px;
+    z-index: 0;
   }
 
   .planet-select-blue {
