@@ -28,14 +28,14 @@ describe('my reducer', () => {
         const fakePlayerToToggle = 'hSJes_8fbvdJGSVCAANH';
         const fakePlayerToggle = myReducer(
                                     {players: [
-                                        {player: 'hSJes_8fbvdJGSVCAANH', ready: false}, 
-                                        {player: 'vMTzX8xWaGc0XngrAAAZ', ready: false}
+                                        {player: {id: 'hSJes_8fbvdJGSVCAANH'}, ready: false}, 
+                                        {player: {id: 'vMTzX8xWaGc0XngrAAAZ'}, ready: false}
                                     ]}, 
                                     { type: 'PLAYER_READY', payload: fakePlayerToToggle })
         expect(fakePlayerToggle).toMatchObject(
                                     {players: [
-                                        {player: 'hSJes_8fbvdJGSVCAANH', ready: true}, 
-                                        {player: 'vMTzX8xWaGc0XngrAAAZ', ready: false}
+                                        {player: {id: 'hSJes_8fbvdJGSVCAANH'}, ready: true}, 
+                                        {player: {id: 'vMTzX8xWaGc0XngrAAAZ'}, ready: false}
                                     ]});
     });
 
