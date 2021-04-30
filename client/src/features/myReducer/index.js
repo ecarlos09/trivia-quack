@@ -10,21 +10,20 @@ const myReducer = (state = {players: [], answers: []}, action) => {
             ...state,
             players: action.payload.map(player => ({player: player, ready: false}))
         })
-      case 'PLAYER_READY':
-          const playerToToggle = state.players.find(p => p.player === action.payload)
-          const likeIdx = state.players.indexOf(playerToToggle)
-          const updatedPlayers = [ 
-              ...state.players.slice(0, likeIdx),
-              { ...playerToToggle, ready: !playerToToggle.ready },
-              ...state.players.slice(likeIdx+1)
-          ]
-          return { ...state, players: updatedPlayers }
-          
-      case 'ALL_NOT_READY':
-        const unReadyPlayers = [
-          ...state.players.map(p => ({player: p.player, ready: false}))
-        ]
-        return {
+          case 'PLAYER_READY':
+            const playerToToggle = state.players.find(p => p.player.id === action.payload)
+            const likeIdx = state.players.indexOf(playerToToggle)
+            const updatedPlayers = [ 
+                ...state.players.slice(0, likeIdx),
+                { ...playerToToggle, ready: !playerToToggle.ready },
+                ...state.players.slice(likeIdx+1)
+            ]
+            return { ...state, players: updatedPlayers }
+            case 'ALL_NOT_READY':
+              const unReadyPlayers = [ 
+                ...state.players.map(p => ({player: p.player, ready: false}))
+              ]
+              return {
                 ...state, players: unReadyPlayers 
               }
       case 'LOAD_QUESTIONS':

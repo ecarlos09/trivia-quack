@@ -8,7 +8,7 @@ const Highscore = () => {
 useEffect(() => {
   async function getScores(){
   const { data } = await axios.get(`${API_ADDRESS}/games/scores`)
-  const topPlayers = data.scores.sort((a,b) => b.points-a.points).map(p => ({name: p.player, count: p.points}))
+  const topPlayers = data.scores.sort((a,b) => b.points-a.points).map(p => ({name: p.username ? p.username : `Guest-${p.player}`, icon: p.icon, count: p.points}))
   topPlayers.length = 10
   setPlayers(topPlayers)
   }

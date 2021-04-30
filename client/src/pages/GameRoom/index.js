@@ -38,10 +38,11 @@ const GameRoom = () => {
           setCurrentQuestion(q => q + 1)
           setDisabled(false);
         } else {
+          const thisPlayer = currentPlayers.find(p => p.player.id === socket.socket.id)
           axios({
             method: 'post',
             url: `${API_ADDRESS}/games/${id}/players/${socket.socket.id}/answers`,
-            data: answers
+            data: { answers, icon: thisPlayer.player.icon, username: thisPlayer.player.username }
           });
           setTimeout(() => history.push(`/results/${id}`), 3000)
         }
@@ -50,8 +51,8 @@ const GameRoom = () => {
 
     const setTheme = useTheme(currentQuestion);
   
-    const returnPlayer = currentPlayers.map((player, index) => {
-        return <PlayerCard key={index} player={player.player} me={player.player === socket.socket.id} icon={getIcon()} ready={player.ready} />
+    const returnPlayer = currentPlayers.map((p, i) => {
+        return <PlayerCard key={i} player={p.player.id} username={p.player.username} me={p.player.id === socket.socket.id} icon={getIcon(p.player.icon)} ready={p.ready} />
     });
   
 

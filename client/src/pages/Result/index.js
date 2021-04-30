@@ -25,7 +25,7 @@ const Result = () => {
             setResults(data.data)
             setScores(data.scores)
             setLoading(false)
-            const scoreSortFix = data.scores.sort((a,b) => b.points - a.points).map(p => ({name: p.name, count: p.points}))
+            const scoreSortFix = data.scores.sort((a,b) => b.points - a.points).map(p => ({name: p.username ? p.username : `Guest-${p.name}`, icon: p.icon, count: p.points}))
             setScores(scoreSortFix)
             setLoading(false)
           } catch (err) {
@@ -50,7 +50,7 @@ const Result = () => {
                   }
                 >
                   {renderHTML(answer)}
-                  <ul className="answer-player-list">{result.player_answers.filter(c => c.answer === answer).map(d => <li>{d.player}</li>)}</ul>
+                  <ul className="answer-player-list">{result.player_answers.filter(c => c.answer === answer).map(d => <li>{d.username ? d.username : `Guest-${d.player}`}</li>)}</ul>
                 </li>
               ))}
             </ul>

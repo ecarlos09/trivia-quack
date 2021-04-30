@@ -97,7 +97,10 @@ class Game {
     });
   }
 
-  static addAnswers(id, player, answers) {
+  static addAnswers(id, player, data) {
+    const answers = data.answers
+    const username = data.username
+    const icon = data.icon
     return new Promise(async (resolve, reject) => {
       try {
         const db = await init();
@@ -124,6 +127,8 @@ class Game {
           count,
           points,
           player,
+          username,
+          icon,
           answers: res,
         });
       } catch (err) {
@@ -146,6 +151,7 @@ class Game {
               answer: item.player_answer,
               correct: item.player_correct,
               player: y.player,
+              username: y.username
             };
           })
         );
@@ -158,7 +164,7 @@ class Game {
             player_answers: answers[i],
           };
         });
-        const scoresToSend = scores.map(s => ({name: s.player, count: s.count, points: s.points}))
+        const scoresToSend = scores.map(s => ({name: s.player, username: s.username, icon: s.icon, count: s.count, points: s.points}))
         resolve({data: data, scores: scoresToSend});
       } catch (err) {
         reject(`Error getting results: ${err.message}`);
@@ -175,6 +181,8 @@ class Game {
           player: r.player,
           count: r.count,
           points: r.points,
+          username: r.username,
+          icon: r.icon
         }));
         resolve(data);
       } catch (err) {
